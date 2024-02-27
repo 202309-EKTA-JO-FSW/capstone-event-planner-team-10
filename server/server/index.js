@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const adminRoute = require("./routes/adminRoute");
+const userRoute = require("./routes/userRoute");
 
 require("dotenv").config();
 
@@ -10,6 +12,8 @@ const port =
   process.env.NODE_ENV === "test"
     ? process.env.NODE_LOCAL_TEST_PORT
     : process.env.NODE_LOCAL_PORT;
+
+app.set("view engine", "ejs");
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -25,5 +29,8 @@ app.get("/test", (req, res) => {
     "Server connection to client works!!  Good Luck with your capstones :D"
   );
 });
+
+app.use("/admin", adminRoute);
+app.use("/user", userRoute);
 
 module.exports = app;

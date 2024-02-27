@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Event</title>
+  </head>
+  <body>
+    <h1>Create a New Event</h1>
+    <form action="/events" method="POST">
+      <label for="title">Title:</label><br />
+      <input type="text" id="title" name="title" required /><br />
+
+      <label for="content">Content:</label><br />
+      <textarea
+        id="content"
+        name="content"
+        rows="4"
+        cols="50"
+        required
+      ></textarea
+      ><br />
+
+      <label for="type">Type:</label><br />
+      <input type="text" id="type" name="type" required /><br />
+
+      <label for="date">Date:</label><br />
+      <input type="datetime-local" id="date" name="date" required /><br />
+
+      <label for="location">Location:</label><br />
+      <select id="location" name="location" required>
+        <% locations.forEach(function(location) { %>
+        <option value="<%= location._id %>"><%= location.title %></option>
+        <% }); %></select
+      ><br />
+
+      <label for="maxSeats">Max Seats:</label><br />
+      <input type="number" id="maxSeats" name="maxSeats" required /><br />
+
+      <label for="eventImage">Event Image:</label><br />
+      <input type="text" id="eventImage" name="eventImage" required /><br />
+
+      <label for="featured">Featured:</label><br />
+      <input type="checkbox" id="featured" name="featured" /><br />
+
+      <input type="submit" value="Create Event" />
+    </form>
+  </body>
+</html>
