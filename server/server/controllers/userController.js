@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Event = require("../models/event");
 
+//make user
 exports.createUser = async (req, res) => {
   try {
     const { email, password, username, locationId } = req.body;
@@ -23,48 +24,65 @@ exports.createUser = async (req, res) => {
   }
 };
 
+//search/filter
+exports.searchEvents = async (req, res) => {
+  try {
+    const { genre, location, title, featured } = req.query;
+
+    const query = {};
+    if (genre) query.genre = genre;
+    if (location) query.location = location;
+
+    if (title) query.title = { $regex: title, $options: "i" }; // not case sensitive
+
+    if (featured === "true") {
+      query.featured = true;
+    }
+
+    const events = await Event.find(query)
+      .populate("genre")
+      .populate("location");
+
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//buy ticket
 exports.purchaseTicket = async (req, res) => {
   try {
     const { userId, eventId, ticketId, quantity } = req.body;
 
-    // Find the event in the database and populate the 'tickets' array
     const event = await Event.findById(eventId)
       .populate({
         path: "tickets",
-        select: "title description price", // Select all necessary fields of the tickets
+        select: "title description price",
       })
       .select("title availableSeats");
 
-    // Check if the event exists
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // Find the purchased ticket within the event's tickets array
     const ticket = event.tickets.find(
       (ticket) => ticket._id.toString() === ticketId
     );
 
-    // Check if the ticket exists in the event
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found in event" });
     }
 
-    // Check if the requested quantity exceeds the available seats
     if (quantity > event.availableSeats) {
       return res.status(400).json({ message: "Not enough available tickets" });
     }
 
-    // Update the availableSeats field of the event document
     event.availableSeats -= quantity;
 
-    // Calculate the total price based on the quantity of tickets
-    const totalPrice = quantity * ticket.price; // Assuming each ticket has a price field
+    const totalPrice = quantity * ticket.price;
 
-    // Save the updated event document back to the database
     await event.save();
 
-    // Add the order to the user's orders with the calculated total price
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -73,9 +91,9 @@ exports.purchaseTicket = async (req, res) => {
     user.orders.push({
       eventId: eventId,
       ticketId: ticketId,
-      eventTitle: event.title, // Add only the event title
-      ticketTitle: ticket.title, // Add the ticket title
-      ticketDescription: ticket.description, // Add the ticket description
+      eventTitle: event.title,
+      ticketTitle: ticket.title,
+      ticketDescription: ticket.description,
       quantity: quantity,
       totalPrice: totalPrice,
     });
@@ -88,26 +106,7 @@ exports.purchaseTicket = async (req, res) => {
   }
 };
 
-// exports.getUserOrders = async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     const orders = await Order.find({ userId })
-//       .populate({
-//         path: "eventId",
-//         select: "title",
-//         model: "Event",
-//       })
-//       .populate({
-//         path: "ticketId",
-//         select: ["title", "description"],
-//         model: "Ticket",
-//       });
-
-//     res.status(200).json({ orders });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
+//get the user's order by their id
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -124,37 +123,25 @@ exports.getUserOrders = async (req, res) => {
 };
 
 //cancel ticket
-exports.cancelTickets = async (req, res) => {
+exports.cancelOrder = async (req, res) => {
   try {
-    const { userId, orderId, ticket } = req.body;
+    const { userId, orderId } = req.body;
 
-    // Find the user in the database
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Find the order in the user's orders
     const order = user.orders.id(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Cancel each ticket specified
-    for (const ticketId of ticket) {
-      const ticketIndex = order.tickets.findIndex(
-        (ticket) => ticket._id.toString() === ticketId
-      );
-      if (ticketIndex !== -1) {
-        // Remove the ticket from the order
-        order.tickets.splice(ticketIndex, 1);
-      }
-    }
+    order.remove();
 
-    // Save the updated user document
     await user.save();
 
-    res.status(200).json({ message: "Tickets canceled successfully" });
+    res.status(200).json({ message: "Order canceled successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

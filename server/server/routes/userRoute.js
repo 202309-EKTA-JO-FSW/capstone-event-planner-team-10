@@ -1,16 +1,21 @@
-// routes/userRoute.js
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
-// Route for creating a new user
+//new user
 router.post("/signup", userController.createUser);
 
+//buy ticket
 router.post("/events/purchase-ticket", userController.purchaseTicket);
 
+//order by id of user
 router.get("/:userId/orders", userController.getUserOrders);
 
-router.put("/cancel-ticket", userController.cancelTickets);
+//cancel order
+router.post("/cancel-order", userController.cancelOrder);
+
+//seatch functionality
+router.get("/events", userController.searchEvents);
 
 // router.get("/new-events", (req, res) => {
 //   res.send("hello world");

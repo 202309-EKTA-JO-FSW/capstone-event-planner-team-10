@@ -20,7 +20,12 @@ exports.createEvent = async (req, res) => {
       tickets,
     } = req.body;
 
-    // Create a new event with the provided information
+    if (availableSeats > maxSeats) {
+      return res
+        .status(400)
+        .json({ message: "Available seats cannot exceed max seats" });
+    }
+
     let event = await Event.create({
       title,
       content,
@@ -32,7 +37,7 @@ exports.createEvent = async (req, res) => {
       availableSeats,
       featured,
       image,
-      tickets, // Array of tickets
+      tickets,
     });
 
     event = await event.populate("location", "title");
@@ -49,18 +54,14 @@ exports.editUserAdminStatus = async (req, res) => {
   try {
     const { userId, isAdmin } = req.body;
 
-    // Find the user in the database
     const user = await User.findById(userId);
 
-    // Check if the user exists
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update the isAdmin field of the user document
     user.isAdmin = isAdmin;
 
-    // Save the updated user document back to the database
     await user.save();
 
     res.status(200).json({ message: "User admin status updated successfully" });
@@ -72,7 +73,7 @@ exports.editUserAdminStatus = async (req, res) => {
 //get all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, "-password"); // Exclude password field
+    const users = await User.find({}, "-password");
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -83,10 +84,8 @@ exports.getEventById = async (req, res) => {
   try {
     const eventId = req.params.id;
 
-    // Find the event in the database by its ID
     const event = await Event.findById(eventId);
 
-    // Check if the event exists
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
@@ -119,18 +118,15 @@ exports.createLocation = async (req, res) => {
 };
 
 //create a genre
-
 exports.createGenre = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Check if the genre already exists
     const existingGenre = await Genre.findOne({ name });
     if (existingGenre) {
       return res.status(400).json({ message: "Genre already exists" });
     }
 
-    // Create a new genre
     const genre = await Genre.create({ name });
 
     res.status(201).json({ message: "Genre created successfully", genre });
