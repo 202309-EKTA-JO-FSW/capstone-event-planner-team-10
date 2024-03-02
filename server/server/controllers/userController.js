@@ -103,22 +103,27 @@ exports.userProfile = async (req, res) => {
 exports.searchEvents = async (req, res) => {
   try {
     const { genre, location, title, featured } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 5;
 
     const query = {};
     if (genre) query.genre = genre;
     if (location) query.location = location;
-
-    if (title) query.title = { $regex: title, $options: "i" }; // not case sensitive
-
+    if (title) query.title = { $regex: title, $options: "i" };
     if (featured === "true") {
       query.featured = true;
     }
 
+    const totalEvents = await Event.countDocuments(query);
+    const totalPages = Math.ceil(totalEvents / pageSize);
+
     const events = await Event.find(query)
       .populate("genre")
-      .populate("location");
+      .populate("location")
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
 
-    res.status(200).json(events);
+    res.status(200).json({ events, totalPages });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
