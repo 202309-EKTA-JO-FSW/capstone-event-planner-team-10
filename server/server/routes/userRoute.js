@@ -1,24 +1,31 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
+const { authenticateUser } = require("../middleware/userAuth");
 
 //new user
 router.post("/signup", userController.createUser);
 
-//buy ticket
-router.post("/events/purchase-ticket", userController.purchaseTicket);
+//log in
+router.post("/login", userController.loginUser);
 
-//order by id of user
-router.get("/:userId/orders", userController.getUserOrders);
-
-//cancel order
-router.post("/cancel-order", userController.cancelOrder);
-
-//seatch functionality
+//search functionality
 router.get("/events", userController.searchEvents);
 
-// router.get("/new-events", (req, res) => {
-//   res.send("hello world");
-// });
+//buy ticket
+router.post(
+  "/events/purchase-ticket",
+  authenticateUser,
+  userController.purchaseTicket
+);
+
+//order by id of user
+router.get("/orders", authenticateUser, userController.getUserOrders);
+
+//cancel order
+router.post("/cancel-order", authenticateUser, userController.cancelOrder);
+
+//myprofile
+router.get("/myprofile", authenticateUser, userController.userProfile);
 
 module.exports = router;

@@ -1,10 +1,36 @@
 const User = require("../models/user");
 const Event = require("../models/event");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 //make user
 exports.createUser = async (req, res) => {
   try {
     const { email, password, username, locationId } = req.body;
+
+    //criteria
+    const passwordCriteria = [
+      { regex: /(?=.*\d)/, message: "at least one number" },
+      { regex: /(?=.*[a-z])/, message: "at least one lowercase letter" },
+      { regex: /(?=.*[A-Z])/, message: "at least one uppercase letter" },
+      {
+        regex: /(?=.*[!@#$])/,
+        message: "at least one special character (!@#$)",
+      },
+      { regex: /.{8,}/, message: "at least 8 characters" },
+    ];
+
+    // check criteria
+    const missingCriteria = passwordCriteria.filter(
+      (criteria) => !criteria.regex.test(password)
+    );
+    if (missingCriteria.length > 0) {
+      const errorMessage =
+        "Password does not meet quality criteria. Missing: " +
+        missingCriteria.map((criteria) => criteria.message).join(", ");
+      return res.status(400).json({ message: errorMessage });
+    }
+
     let user = await User.create({
       email,
       password,
@@ -21,6 +47,49 @@ exports.createUser = async (req, res) => {
       return res.status(400).json({ message: `${field} is already taken` });
     }
     res.status(500).json({ message: err.message });
+  }
+};
+
+//login
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({ user, token });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//myprofile
+exports.userProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId).populate("location");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -52,7 +121,11 @@ exports.searchEvents = async (req, res) => {
 //buy ticket
 exports.purchaseTicket = async (req, res) => {
   try {
-    const { userId, eventId, ticketId, quantity } = req.body;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const { eventId, ticketId, quantity } = req.body;
 
     const event = await Event.findById(eventId)
       .populate({
@@ -109,7 +182,7 @@ exports.purchaseTicket = async (req, res) => {
 //get the user's order by their id
 exports.getUserOrders = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.user._id;
     const user = await User.findById(userId).populate("orders.eventId");
 
     if (!user) {
@@ -122,10 +195,14 @@ exports.getUserOrders = async (req, res) => {
   }
 };
 
-//cancel ticket
+//cancel order
 exports.cancelOrder = async (req, res) => {
   try {
-    const { userId, orderId } = req.body;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const { orderId } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {

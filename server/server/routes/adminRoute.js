@@ -2,12 +2,16 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
-
-//make location
-router.post("/location", adminController.createLocation);
+const { adminAuthMiddleware } = require("../middleware/adminAuth");
+const { authenticateUser } = require("../middleware/userAuth");
 
 // make event
-router.post("/event", adminController.createEvent);
+router.post(
+  "/event",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.createEvent
+);
 
 //get all events
 router.get("/events", adminController.getAllEvents);
@@ -16,13 +20,36 @@ router.get("/events", adminController.getAllEvents);
 router.get("/events/:id", adminController.getEventById);
 
 //make a user admin or non-admin
-router.put("/edit-user", adminController.editUserAdminStatus);
+router.put(
+  "/edit-user",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.editUserAdminStatus
+);
 
 //get all users
-router.get("/users", adminController.getAllUsers);
+router.get(
+  "/users",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.getAllUsers
+);
 
 //make a genre
-router.post("/create-genre", adminController.createGenre);
+router.post(
+  "/create-genre",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.createGenre
+);
+
+//make location
+router.post(
+  "/location",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.createLocation
+);
 
 // router.get("/new-events", (req, res) => {
 //   res.send("hello world");
