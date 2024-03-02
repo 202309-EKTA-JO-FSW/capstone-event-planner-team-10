@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Event = require("../models/event");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 //make user
 exports.createUser = async (req, res) => {
@@ -66,10 +67,15 @@ exports.loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "12h",
     });
 
-    res.status(200).json({ user, token });
+    res.cookie("jwtToken", token, {
+      maxAge: 12 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    res.status(200).json({ user });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
