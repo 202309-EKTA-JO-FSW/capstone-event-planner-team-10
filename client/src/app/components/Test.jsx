@@ -5,7 +5,7 @@ const Hello = () => {
   const [testResult, setTestResult] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/admin/users")
+    fetch("http://localhost:3001/admin/events")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Network response was not ok");
