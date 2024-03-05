@@ -74,8 +74,7 @@ exports.loginUser = async (req, res) => {
 
     res.cookie("jwtToken", token, {
       maxAge: 12 * 60 * 60 * 1000,
-      httpOnly: false,
-      sameSite: false,
+      httpOnly: true,
     });
 
     res.status(200).json({ user });
@@ -235,6 +234,24 @@ exports.cancelOrder = async (req, res) => {
     res.status(200).json({ message: "Order canceled successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getAllLocations = async (req, res) => {
+  try {
+    const locations = await Location.find();
+    res.status(200).json(locations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getAllGenres = async (req, res) => {
+  try {
+    const genres = await Genre.find();
+    res.status(200).json(genres);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
