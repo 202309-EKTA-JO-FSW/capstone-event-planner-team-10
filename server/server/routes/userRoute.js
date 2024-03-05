@@ -28,4 +28,9 @@ router.post("/cancel-order", authenticateUser, userController.cancelOrder);
 //myprofile
 router.get("/myprofile", authenticateUser, userController.userProfile);
 
+//get all locations
+router.get("/location-list", userController.getAllLocations);
+
+//get all genres
+router.get("/genre-list", userController.getAllGenres);
 module.exports = router;
