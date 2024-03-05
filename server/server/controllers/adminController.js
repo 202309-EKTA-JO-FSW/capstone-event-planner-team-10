@@ -134,3 +134,24 @@ exports.createGenre = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+//edit an event
+exports.editEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const updatedInfo = req.body;
+
+    const event = await Event.findByIdAndUpdate(eventId, updatedInfo, {
+      new: true,
+    });
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.status(200).json({ message: "Event updated successfully", event });
+  } catch (error) {
+    console.error("Error editing event:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
