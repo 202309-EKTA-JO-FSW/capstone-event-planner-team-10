@@ -106,7 +106,7 @@ exports.searchEvents = async (req, res) => {
   try {
     const { genre, location, title, featured } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 5;
+    const pageSize = 6;
 
     const query = {};
     if (genre) query.genre = genre;
