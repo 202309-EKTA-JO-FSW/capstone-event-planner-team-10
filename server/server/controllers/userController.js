@@ -104,7 +104,8 @@ exports.userProfile = async (req, res) => {
 //search/filter
 exports.searchEvents = async (req, res) => {
   try {
-    const { genre, location, title, featured } = req.query;
+    const { genre, location, title, featured, minRating, maxRating } =
+      req.query;
     const page = parseInt(req.query.page) || 1;
     const pageSize = 6;
 
@@ -115,6 +116,11 @@ exports.searchEvents = async (req, res) => {
     if (featured === "true") {
       query.featured = true;
     }
+    if (minRating && maxRating)
+      query.rating = {
+        $gte: parseFloat(minRating),
+        $lte: parseFloat(maxRating),
+      };
 
     const totalEvents = await Event.countDocuments(query);
     const totalPages = Math.ceil(totalEvents / pageSize);

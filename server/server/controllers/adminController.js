@@ -16,6 +16,7 @@ exports.createEvent = async (req, res) => {
       maxSeats,
       availableSeats,
       featured,
+      rating,
       image,
       tickets,
     } = req.body;
@@ -36,6 +37,7 @@ exports.createEvent = async (req, res) => {
       maxSeats,
       availableSeats,
       featured,
+      rating,
       image,
       tickets,
     });
