@@ -21,6 +21,7 @@ const eventSchema = new Schema({
   maxSeats: { type: Number, required: true },
   availableSeats: { type: Number, required: true },
   featured: { type: Boolean, default: false },
+  rating: { type: Number, default: 4 },
   image: { type: String, default: "https://dummyimage.com/1600x1080/000/fff" },
   tickets: [ticketSchema],
 });
