@@ -16,9 +16,6 @@ router.post(
 //get all events
 router.get("/events", adminController.getAllEvents);
 
-//get event by id
-router.get("/events/:id", adminController.getEventById);
-
 //make a user admin or non-admin
 router.put(
   "/edit-user",
