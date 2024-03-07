@@ -33,4 +33,8 @@ router.get("/location-list", userController.getAllLocations);
 
 //get all genres
 router.get("/genre-list", userController.getAllGenres);
+
+//get event by id
+router.get("/events/:id", userController.getEventById);
+
 module.exports = router;

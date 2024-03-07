@@ -6,18 +6,10 @@ const { adminAuthMiddleware } = require("../middleware/adminAuth");
 const { authenticateUser } = require("../middleware/userAuth");
 
 // make event
-router.post(
-  "/event",
-  authenticateUser,
-  adminAuthMiddleware,
-  adminController.createEvent
-);
+router.post("/event", adminController.createEvent);
 
 //get all events
 router.get("/events", adminController.getAllEvents);
-
-//get event by id
-router.get("/events/:id", adminController.getEventById);
 
 //make a user admin or non-admin
 router.put(
