@@ -6,15 +6,15 @@ const { adminAuthMiddleware } = require("../middleware/adminAuth");
 const { authenticateUser } = require("../middleware/userAuth");
 
 // make event
-router.post(
-  "/event",
-  authenticateUser,
-  adminAuthMiddleware,
-  adminController.createEvent
-);
+router.post("/event", adminController.createEvent);
 
 //get all events
-router.get("/events", adminController.getAllEvents);
+router.get(
+  "/events",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.getAllEvents
+);
 
 //make a user admin or non-admin
 router.put(
@@ -49,12 +49,7 @@ router.post(
 );
 
 //edit events
-router.put(
-  "/events/:id",
-  authenticateUser,
-  adminAuthMiddleware,
-  adminController.editEvent
-);
+router.put("/events/:id", adminController.editEvent);
 
 // router.get("/new-events", (req, res) => {
 //   res.send("hello world");
