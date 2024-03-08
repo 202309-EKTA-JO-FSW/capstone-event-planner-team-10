@@ -283,7 +283,9 @@ exports.getEventById = async (req, res) => {
   try {
     const eventId = req.params.id;
 
-    const event = await Event.findById(eventId);
+    const event = await Event.findById(eventId)
+      .populate("genre")
+      .populate("location");
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
