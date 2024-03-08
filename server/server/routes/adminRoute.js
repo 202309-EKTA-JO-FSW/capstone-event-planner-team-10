@@ -49,7 +49,12 @@ router.post(
 );
 
 //edit events
-router.put("/events/:id", adminController.editEvent);
+router.put(
+  "/events/:id",
+  authenticateUser,
+  adminAuthMiddleware,
+  adminController.editEvent
+);
 
 // router.get("/new-events", (req, res) => {
 //   res.send("hello world");
