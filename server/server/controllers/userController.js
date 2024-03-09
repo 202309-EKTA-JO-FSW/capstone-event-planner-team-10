@@ -2,7 +2,6 @@ const User = require("../models/user");
 const Event = require("../models/event");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 const Location = require("../models/location");
 const Genre = require("../models/genre");
 
@@ -104,8 +103,15 @@ exports.userProfile = async (req, res) => {
 //search/filter
 exports.searchEvents = async (req, res) => {
   try {
-    const { genre, location, title, featured, minRating, maxRating } =
-      req.query;
+    const {
+      genre,
+      location,
+      title,
+      featured,
+      minRating,
+      maxRating,
+      includeSoldOut,
+    } = req.query;
     const page = parseInt(req.query.page) || 1;
     const pageSize = 6;
 
@@ -121,6 +127,10 @@ exports.searchEvents = async (req, res) => {
         $gte: parseFloat(minRating),
         $lte: parseFloat(maxRating),
       };
+
+    if (includeSoldOut !== "true") {
+      query.availableSeats = { $gt: 0 };
+    }
 
     const totalEvents = await Event.countDocuments(query);
     const totalPages = Math.ceil(totalEvents / pageSize);
@@ -243,6 +253,7 @@ exports.cancelOrder = async (req, res) => {
   }
 };
 
+//genre all location
 exports.getAllLocations = async (req, res) => {
   try {
     const locations = await Location.find();
@@ -252,6 +263,7 @@ exports.getAllLocations = async (req, res) => {
   }
 };
 
+//get all genres
 exports.getAllGenres = async (req, res) => {
   try {
     const genres = await Genre.find();
@@ -261,24 +273,7 @@ exports.getAllGenres = async (req, res) => {
   }
 };
 
-exports.getAllLocations = async (req, res) => {
-  try {
-    const locations = await Location.find();
-    res.status(200).json(locations);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getAllGenres = async (req, res) => {
-  try {
-    const genres = await Genre.find();
-    res.status(200).json(genres);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
+//get event by id
 exports.getEventById = async (req, res) => {
   try {
     const eventId = req.params.id;
