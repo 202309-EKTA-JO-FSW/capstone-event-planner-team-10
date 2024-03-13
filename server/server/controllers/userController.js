@@ -4,11 +4,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Location = require("../models/location");
 const Genre = require("../models/genre");
+const cookie = require("cookie");
 
 //make user
 exports.createUser = async (req, res) => {
   try {
-    const { email, password, username, locationId } = req.body;
+    const { email, password, username, locationId, image } = req.body;
 
     //criteria
     const passwordCriteria = [
@@ -38,6 +39,7 @@ exports.createUser = async (req, res) => {
       password,
       username,
       location: locationId,
+      image: image || "",
     });
 
     await user.populate("location", "title");
@@ -71,15 +73,38 @@ exports.loginUser = async (req, res) => {
       expiresIn: "12h",
     });
 
-    res.cookie("jwtToken", token, {
-      maxAge: 12 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
+    res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("token", token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60,
+        sameSite: "strict",
+        path: "/",
+      })
+    );
 
-    res.status(200).json({ user });
+    res.status(200).json({ user, token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+};
+
+//logout
+exports.logoutUser = (req, res) => {
+  res.setHeader(
+    "Set-Cookie",
+    cookie.serialize("token", "", {
+      httpOnly: true,
+      secure: false,
+      expires: new Date(0),
+      sameSite: "strict",
+      path: "/",
+    })
+  );
+
+  res.statusCode = 200;
+  res.json({ success: true });
 };
 
 //myprofile
@@ -142,6 +167,24 @@ exports.searchEvents = async (req, res) => {
       .limit(pageSize);
 
     res.status(200).json({ events, totalPages });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getCurrentUser = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    const user = await User.findById(userId).populate("location");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -260,6 +303,35 @@ exports.getAllLocations = async (req, res) => {
     res.status(200).json(locations);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+//update location:
+exports.updateLocation = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const { locationId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const location = await Location.findById(locationId);
+    if (!location) {
+      return res.status(404).json({ message: "Location not found" });
+    }
+
+    user.location = locationId;
+
+    await user.save();
+
+    res.status(200).json({ message: "Location updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 

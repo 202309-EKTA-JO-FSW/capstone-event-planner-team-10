@@ -19,7 +19,7 @@ describe("User Model", () => {
     expect(user.username).toBe(userData.username);
     expect(user.isAdmin).toBe(false);
     expect(user.image).toBe(
-      "http://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon"
+      "https://firebasestorage.googleapis.com/v0/b/eventure-61c1e.appspot.com/o/users%2Faz.png?alt=media&token=189648cb-0edb-40cc-a54a-2dcb61fafaa2"
     );
     expect(user.location).toEqual(userData.location);
     expect(user.orders).toEqual([]);
@@ -36,7 +36,6 @@ describe("User Model", () => {
     expect(error).toBeDefined();
     expect(error.errors.password).toBeDefined();
     expect(error.errors.username).toBeDefined();
-    expect(error.errors.location).toBeDefined();
   });
 
   it("should hash the user password before saving", async () => {

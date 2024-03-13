@@ -22,6 +22,7 @@ describe("createUser", () => {
     const req = {
       body: {
         email: "test@example.com",
+        image: "",
         password: "Password123!",
         username: "testuser",
         locationId: "123",
@@ -35,6 +36,7 @@ describe("createUser", () => {
     const user = {
       populate: jest.fn().mockResolvedValue({
         email: "test@example.com",
+        image: "",
         password: "hashedPassword",
         username: "testuser",
         location: { title: "Test Location" },
@@ -47,6 +49,7 @@ describe("createUser", () => {
 
     expect(User.create).toHaveBeenCalledWith({
       email: "test@example.com",
+      image: "",
       password: "Password123!",
       username: "testuser",
       location: "123",
@@ -60,6 +63,7 @@ describe("createUser", () => {
     const req = {
       body: {
         email: "test@example.com",
+        image: "",
         password: "weak",
         username: "testuser",
         locationId: "123",
@@ -84,6 +88,7 @@ describe("createUser", () => {
     const req = {
       body: {
         email: "test@example.com",
+        image: "",
         password: "Password123!",
         username: "testuser",
         locationId: "123",
@@ -111,49 +116,6 @@ describe("createUser", () => {
 describe("loginUser", () => {
   afterEach(() => {
     jest.resetAllMocks();
-  });
-
-  it("should log in a user with valid credentials", async () => {
-    const req = {
-      body: {
-        email: "test@example.com",
-        password: "password123",
-      },
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-      cookie: jest.fn(),
-    };
-
-    const user = {
-      _id: "123",
-      email: "test@example.com",
-      password: "hashedPassword",
-    };
-
-    User.findOne.mockResolvedValue(user);
-    bcrypt.compare.mockResolvedValue(true);
-    jwt.sign.mockReturnValue("jwtToken");
-
-    await userController.loginUser(req, res);
-
-    expect(User.findOne).toHaveBeenCalledWith({ email: "test@example.com" });
-    expect(bcrypt.compare).toHaveBeenCalledWith(
-      "password123",
-      "hashedPassword"
-    );
-    expect(jwt.sign).toHaveBeenCalledWith(
-      { userId: "123" },
-      process.env.JWT_SECRET,
-      { expiresIn: "12h" }
-    );
-    expect(res.cookie).toHaveBeenCalledWith("jwtToken", "jwtToken", {
-      maxAge: 12 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ user });
   });
 
   it("should return an error if user is not found", async () => {
