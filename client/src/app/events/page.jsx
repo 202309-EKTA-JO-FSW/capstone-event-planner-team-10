@@ -4,6 +4,7 @@ import axios from "axios";
 import SearchFilters from "../components/eventsExploreComponents/SearchComponents/SearchFilters";
 import EventList from "../components/eventsExploreComponents/EventList";
 import Pagination from "../components/eventsExploreComponents/Pagination";
+import { BASE_URL } from "../utls/constants";
 
 const ExplorePage = () => {
   const [genres, setGenres] = useState([]);
@@ -18,25 +19,38 @@ const ExplorePage = () => {
   });
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [userLocationFetched, setUserLocationFetched] = useState(false);
+
+  useEffect(() => {
+    const token = getCookie("token");
+
+    if (token) {
+      fetchUserLocation(token);
+    } else {
+      setSearchParams((prevParams) => ({ ...prevParams, location: "" }));
+      setUserLocationFetched(true);
+    }
+  }, []);
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const genresResponse = await axios.get(
-          "http://localhost:3001/user/genre-list"
-        );
+        const genresResponse = await axios.get(`${BASE_URL}/user/genre-list`);
         setGenres(genresResponse.data);
-
         const locationsResponse = await axios.get(
-          "http://localhost:3001/user/location-list"
+          `${BASE_URL}/user/location-list`
         );
         setLocations(locationsResponse.data);
-
-        const eventsResponse = await axios.get(
-          "http://localhost:3001/user/events",
-          { params: searchParams }
-        );
+        const eventsResponse = await axios.get(`${BASE_URL}/user/events`, {
+          params: searchParams,
+        });
         setEvents(eventsResponse.data.events);
         setTotalPages(eventsResponse.data.totalPages);
         setIsLoading(false);
@@ -46,8 +60,10 @@ const ExplorePage = () => {
       }
     };
 
-    fetchData();
-  }, [searchParams]);
+    if (userLocationFetched) {
+      fetchData();
+    }
+  }, [searchParams, userLocationFetched]);
 
   const handleFilterChange = (filterName, filterValue) => {
     setSearchParams((prevParams) => ({
@@ -72,7 +88,9 @@ const ExplorePage = () => {
       const selectedLocation = locations.find(
         (location) => location._id === searchParams.location
       );
-      filterString += `${selectedLocation.title}, `;
+      filterString += `${
+        selectedLocation ? selectedLocation.title : "Your location"
+      }, `;
     }
     if (searchParams.genre) {
       const selectedGenre = genres.find(
@@ -84,6 +102,29 @@ const ExplorePage = () => {
       filterString += `Featured, `;
     }
     return filterString.slice(0, -2);
+  };
+
+  const fetchUserLocation = async (token) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userLocation = response.data.user.location;
+      setSearchParams((prevParams) => ({
+        ...prevParams,
+        location: userLocation,
+      }));
+      setUserLocationFetched(true);
+    } catch (error) {
+      console.error("Error fetching user location:", error);
+      setSearchParams((prevParams) => ({
+        ...prevParams,
+        location: "",
+      }));
+      setUserLocationFetched(true);
+    }
   };
 
   return (
@@ -103,7 +144,7 @@ const ExplorePage = () => {
           </div>
           {isLoading ? (
             <p>Loading...</p>
-          ) : (
+          ) : userLocationFetched ? (
             <>
               <EventList events={events} />
               {events.length > 0 && (
@@ -114,7 +155,7 @@ const ExplorePage = () => {
                 />
               )}
             </>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

@@ -1,11 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import PurchaseModal from "@/app/components/PurchaseModal";
+import { BASE_URL } from "@/app/utls/constants";
 
 const EventPage = ({ params }) => {
+  const router = useRouter();
   const { eventId } = params;
   const [event, setEvent] = useState(null);
   const [ticketsToOrder, setTicketsToOrder] = useState({});
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+
   const isTicketSoldOut = () => {
     return event.availableSeats === 0;
   };
@@ -13,9 +19,7 @@ const EventPage = ({ params }) => {
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/user/events/${eventId}`
-        );
+        const response = await axios.get(`${BASE_URL}/user/events/${eventId}`);
         setEvent(response.data);
       } catch (error) {
         console.error("Error fetching event data:", error);
@@ -48,12 +52,45 @@ const EventPage = ({ params }) => {
     return (basePrice * quantity).toFixed(2);
   };
 
-  const handleBuyNowClick = (ticket) => {
-    console.log(
-      `Buying ${ticketsToOrder[ticket._id]} ${
-        ticket.title
-      } ticket(s) for $${getTicketPrice(ticket)}`
-    );
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
+
+  const handleBuyNowClick = async (ticket) => {
+    try {
+      const token = getCookie("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+
+      const quantity = ticketsToOrder[ticket._id] || 1;
+      const response = await fetch(`${BASE_URL}/user/events/purchase-ticket`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ eventId, ticketId: ticket._id, quantity }),
+      });
+
+      if (response.ok) {
+        setShowPurchaseModal(true);
+      } else {
+        const error = await response.json();
+        alert(error.message);
+      }
+    } catch (error) {
+      console.error("Error purchasing ticket:", error);
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowPurchaseModal(false);
   };
 
   return (
@@ -117,7 +154,7 @@ const EventPage = ({ params }) => {
                       className={`text-white transition-colors duration-150 border-2 px-4 py-2 rounded-full ${
                         isTicketSoldOut(ticket)
                           ? "border-gray-400 bg-gray-400 cursor-not-allowed"
-                          : "border-blue-500 hover:border-blue-600 bg-blue-500 hover:bg-blue-600"
+                          : "text-white transition-colors duration-300 border-2 border-stone-700 hover:border-stone-700 bg-stone-700 hover:bg-orange-300 hover:text-black"
                       }`}
                       onClick={() => handleBuyNowClick(ticket)}
                       disabled={isTicketSoldOut(ticket)}
@@ -131,6 +168,7 @@ const EventPage = ({ params }) => {
           </div>
         </div>
       </div>
+      <PurchaseModal isOpen={showPurchaseModal} onClose={handleModalClose} />
     </div>
   );
 };

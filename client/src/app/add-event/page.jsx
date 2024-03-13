@@ -1,8 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { imageDb } from "../utls/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { useRouter } from "next/navigation";
+import { BASE_URL } from "../utls/constants";
 
 const EventForm = () => {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [genreId, setGenreId] = useState("");
@@ -12,26 +19,79 @@ const EventForm = () => {
   const [availableSeats, setAvailableSeats] = useState(0);
   const [featured, setFeatured] = useState(false);
   const [rating, setRating] = useState(4);
-  const [image, setImage] = useState(
-    "https://dummyimage.com/1600x1080/000/fff"
-  );
+  const [image, setImage] = useState(null);
   const [tickets, setTickets] = useState([
     { title: "", description: "", price: 0 },
   ]);
   const [locations, setLocations] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [redirectTimeout, setRedirectTimeout] = useState(null);
+  const router = useRouter();
+
+  const getTokenFromCookies = () => {
+    const cookies = document.cookie.split(";");
+    const tokenCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("token=")
+    );
+    if (tokenCookie) {
+      return tokenCookie.split("=")[1];
+    }
+    return null;
+  };
+
+  const checkIfAdmin = async () => {
+    const token = getTokenFromCookies();
+    if (!token) {
+      console.error("No token found");
+      return false;
+    }
+
+    try {
+      const response = await axios.get(`${BASE_URL}/user/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.user.isAdmin;
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const isUserAdmin = await checkIfAdmin();
+      setIsAdmin(isUserAdmin);
+
+      if (!isUserAdmin) {
+        const timeout = setTimeout(() => {
+          alert("You must be an admin to access this page");
+          router.push("/events");
+        });
+        setRedirectTimeout(timeout);
+      }
+    };
+
+    checkAdmin();
+
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+      }
+    };
+  }, [router]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const locationResponse = await axios.get(
-          "http://localhost:3001/user/location-list"
+          `${BASE_URL}/user/location-list`
         );
         setLocations(locationResponse.data);
 
-        const genreResponse = await axios.get(
-          "http://localhost:3001/user/genre-list"
-        );
+        const genreResponse = await axios.get(`${BASE_URL}/user/genre-list`);
         setGenres(genreResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,29 +117,63 @@ const EventForm = () => {
     setTickets(updatedTickets);
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3001/admin/event", {
-        title,
-        content,
-        genreId,
-        date,
-        locationId,
-        isOpen: true,
-        maxSeats,
-        availableSeats,
-        featured,
-        rating,
-        image,
-        tickets,
-      });
+      const token = getTokenFromCookies();
+
+      if (!token) {
+        setErrorMessage("You must be authenticated to create an event.");
+        return;
+      }
+
+      let imageUrl = "";
+
+      if (image) {
+        const imgRef = ref(imageDb, `events/${v4()}`);
+        await uploadBytes(imgRef, image);
+        imageUrl = await getDownloadURL(imgRef);
+      }
+
+      const response = await axios.post(
+        `${BASE_URL}/admin/event`,
+        {
+          title,
+          content,
+          genreId,
+          date,
+          locationId,
+          isOpen: true,
+          maxSeats,
+          availableSeats,
+          featured,
+          rating,
+          image: imageUrl,
+          tickets,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       console.log("Event created:", response.data);
-      // Reset form fields or perform any additional actions
+      setSuccessMessage("Event created successfully!");
+      setErrorMessage("");
     } catch (error) {
       console.error("Error creating event:", error);
+      setErrorMessage(
+        "An error occurred while creating the event, please make sure to fill out all the forms."
+      );
+      setSuccessMessage("");
     }
   };
   return (
@@ -87,7 +181,7 @@ const EventForm = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">Create Event</h1>
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-md p-8"
+        className="bg-white shadow-lg rounded-md p-8"
       >
         <div className="mb-4">
           <label htmlFor="title" className="block font-bold mb-2">
@@ -136,10 +230,10 @@ const EventForm = () => {
 
           <div>
             <label htmlFor="date" className="block font-bold mb-2">
-              Date
+              Date and Time
             </label>
             <input
-              type="date"
+              type="datetime-local"
               id="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -226,10 +320,9 @@ const EventForm = () => {
             Image
           </label>
           <input
-            type="text"
+            type="file"
             id="image"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            onChange={handleImageChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -270,7 +363,7 @@ const EventForm = () => {
               <button
                 type="button"
                 onClick={() => handleRemoveTicket(index)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 duration-300"
               >
                 Remove
               </button>
@@ -279,7 +372,7 @@ const EventForm = () => {
           <button
             type="button"
             onClick={handleAddTicket}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="mt-2 px-4 py-2 bg-stone-700 text-white rounded-full hover:bg-orange-300 hover:text-black border-2 border-stone-700 duration-300"
           >
             Add Ticket
           </button>
@@ -287,11 +380,17 @@ const EventForm = () => {
 
         <button
           type="submit"
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full"
+          className="mt-4 px-4 py-2 bg-stone-700 text-white rounded-full hover:bg-orange-300 hover:text-black border-2 border-stone-700 w-full duration-300"
         >
           Create Event
         </button>
       </form>
+      {successMessage && (
+        <p className="mt-4 text-green-600 text-center">{successMessage}</p>
+      )}
+      {errorMessage && (
+        <p className="mt-4 text-red-600 text-center">{errorMessage}</p>
+      )}
     </div>
   );
 };

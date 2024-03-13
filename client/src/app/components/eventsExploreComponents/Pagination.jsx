@@ -11,7 +11,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-3 py-2 bg-gray-200 text-gray-500 rounded-l hover:bg-blue-500 hover:text-white border-r-1 hover:border-gray-200 duration-300"
+              className="px-3 py-2 bg-stone-700 text-white rounded-l hover:bg-orange-300 hover:text-black border-r-1 hover:border-stone-700 duration-300"
             >
               Prev
             </button>
@@ -21,10 +21,10 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
               <button
                 onClick={() => onPageChange(pageNumber)}
                 disabled={pageNumber === currentPage}
-                className={`px-3 py-2 hover:bg-blue-500 hover:text-white border-x hover:border-gray-200 duration-300 ${
+                className={`px-3 py-2  ${
                   pageNumber === currentPage
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-500"
+                    ? "bg-orange-300 text-black border-x border-stone-700 "
+                    : "bg-stone-700 text-white hover:bg-orange-300 hover:text-black duration-300 border-x border-stone-700"
                 }`}
               >
                 {pageNumber}
@@ -35,7 +35,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-3 py-2 bg-gray-200 text-gray-500 rounded-r hover:bg-blue-500 hover:text-white border-l-1 hover:border-gray-200 duration-300"
+              className="px-3 py-2 bg-stone-700 text-white rounded-r hover:bg-orange-300 hover:text-black border-l-1 hover:border-stone-700 duration-300"
             >
               Next
             </button>

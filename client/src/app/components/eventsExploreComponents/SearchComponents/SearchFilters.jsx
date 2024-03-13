@@ -43,7 +43,7 @@ const SearchFilters = ({ genres, locations, searchParams, onFilterChange }) => {
   };
 
   return (
-    <div className="bg-gray-100 border-x-4 border-gray-200 rounded-lg shadow-lg p-4">
+    <div className=" bg-gray-100 border-x-2 border-gray-200 rounded-lg shadow-xl p-4">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">
         Search Events
       </h2>
@@ -72,7 +72,7 @@ const SearchFilters = ({ genres, locations, searchParams, onFilterChange }) => {
               max="5"
               value={minRating}
               onChange={(e) => handleRatingChange(e, "minRating")}
-              className="w-full"
+              className="w-full accent-orange-300"
             />
             <span className="ml-2 text-gray-600">{minRating}</span>
           </div>
@@ -84,7 +84,7 @@ const SearchFilters = ({ genres, locations, searchParams, onFilterChange }) => {
               max="5"
               value={maxRating}
               onChange={(e) => handleRatingChange(e, "maxRating")}
-              className="w-full"
+              className="w-full accent-orange-300"
             />
             <span className="ml-2 text-gray-600">{maxRating}</span>
           </div>
@@ -99,7 +99,7 @@ const SearchFilters = ({ genres, locations, searchParams, onFilterChange }) => {
               checked={searchParams.featured}
               onChange={(e) => onFilterChange("featured", e.target.checked)}
               className={`mt-1 appearance-none rounded-full h-4 w-4 border-2 border-gray-400 ${
-                searchParams.featured ? "bg-indigo-600 border-indigo-600" : ""
+                searchParams.featured ? "bg-orange-300 border-orange-300" : ""
               } focus:outline-none transition-colors duration-200`}
             />
           </div>
@@ -118,7 +118,7 @@ const SearchFilters = ({ genres, locations, searchParams, onFilterChange }) => {
               }
               className={`mt-1 appearance-none rounded-full h-4 w-4 border-2 border-gray-400 ${
                 searchParams.includeSoldOut
-                  ? "bg-indigo-600 border-indigo-600"
+                  ? "bg-orange-300 border-orange-300"
                   : ""
               } focus:outline-none transition-colors duration-200`}
             />

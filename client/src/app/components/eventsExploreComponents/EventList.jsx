@@ -1,7 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import PurchaseModal from "../PurchaseModal";
+import { BASE_URL } from "@/app/utls/constants";
 
 const EventList = ({ events }) => {
+  const router = useRouter();
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
+
+  const handlePurchaseTicket = async (eventId, ticketId, quantity) => {
+    try {
+      const token = getCookie("token");
+
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/user/events/purchase-ticket`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ eventId, ticketId, quantity }),
+      });
+
+      if (response.ok) {
+        setShowPurchaseModal(true);
+      } else {
+        const error = await response.json();
+        alert(error.message);
+      }
+    } catch (error) {
+      console.error("Error purchasing ticket:", error);
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowPurchaseModal(false);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {events.length === 0 ? (
@@ -12,7 +59,7 @@ const EventList = ({ events }) => {
         events.map((event) => (
           <div
             key={event._id}
-            className="border rounded-lg overflow-hidden shadow flex flex-col"
+            className=" rounded-lg overflow-hidden shadow-lg flex flex-col bg-gray-100 border-2 border-gray-200"
           >
             <img
               src={event.image}
@@ -47,14 +94,14 @@ const EventList = ({ events }) => {
                 {event.availableSeats}
               </p>
               {event.featured && (
-                <span className="bg-green-500 text-white px-2 py-1 rounded-full mt-1">
+                <span className="bg-teal-400 text-black px-2 py-1 rounded-full mt-1">
                   Featured!
                 </span>
               )}
             </div>
             <div className="flex justify-between items-center">
               <div className="select-none">
-                <span className="ml-2 text-m font-semibold">Rating:</span>{" "}
+                <span className="ml-2 text-sm font-semibold">Rating:</span>{" "}
                 {event.rating}/5 ⭐
               </div>
               <div>
@@ -70,17 +117,26 @@ const EventList = ({ events }) => {
                     Sold Out
                   </button>
                 ) : (
-                  <button className="mb-2 mr-1 text-white  transition-colors duration-150 border-2 border-blue-500 hover:border-blue-600 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-full">
-                    Buy Tickets
+                  <button
+                    className="mb-2 mr-1 text-white transition-colors duration-150 border-2 border-stone-700 hover:border-stone-700 bg-stone-700 hover:bg-orange-300 hover:text-black px-4 py-2 rounded-full"
+                    onClick={() =>
+                      handlePurchaseTicket(event._id, event.tickets[0]._id, 1)
+                    }
+                  >
+                    Buy a Ticket
                   </button>
                 )}
                 <Link href={`/events/${event._id}`} legacyBehavior>
-                  <button className="mr-1 text-black border-2 border-blue-500 hover:border-blue-600  transition-colors duration-150 bg-white  hover:bg-gray-100  px-4 py-2 rounded-full">
+                  <button className="mr-1 text-black border-2 border-stone-700 hover:border-stone-700  transition-colors duration-150 bg-white  hover:bg-gray-100  px-4 py-2 rounded-full">
                     View Details
                   </button>
                 </Link>
               </div>
             </div>
+            <PurchaseModal
+              isOpen={showPurchaseModal}
+              onClose={handleModalClose}
+            />
           </div>
         ))
       )}
