@@ -35,7 +35,7 @@ function Nav()  {
     //console.log(header, isHomePage)
   return (
   
-      <div className= { ( header && isHomePage) ? "bg-transparent z-10 shadow-md w-full fixed top-0 left-0 py-3" :"bg-black z-20 shadow-md w-full fixed top-0 left-0 py-2 " }>
+      <div className= { ( header && isHomePage) ? "bg-transparent z-20 shadow-md w-full fixed top-0 left-0 py-3" :"bg-black z-20 shadow-md w-full fixed top-0 left-0 py-2 " }>
         <div className='md:flex items-center justify-between py-1 md:px-10 px-7'>
         <div className=' cursor-pointer flex items-center'>
           <Logo/>
