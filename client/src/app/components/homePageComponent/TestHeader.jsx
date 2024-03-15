@@ -1,5 +1,6 @@
 "use client"
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useState } from 'react';
+import Link from 'next/link';
 import Logo from './Logo'
 
 
@@ -69,7 +70,9 @@ function Nav()  {
           <li className='md:ml-8 md:my-0 my-7'>
               <button class="text-white font-sans font-semibold uppercase middle none center mr-3 rounded-xl border border-slate-300 py-3 px-6 text-base transition-all hover:text-orange-200 hover:opacity-75 focus:ring focus:ring-grey-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                       data-ripple-dark="true">
-                  sign-in
+                  <Link href="/user/login" legacyBehavior>
+                          <a className="block w-full h-full">Sign in</a>
+                  </Link>
               </button>
           </li>
         </ul>
