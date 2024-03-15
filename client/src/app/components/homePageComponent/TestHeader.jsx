@@ -9,7 +9,7 @@ function Nav()  {
     let Links =[
       {name:"ABOUT",link:"/"},
       {name:"explore",link:"/events"},
-      {name:"CONTACT",link:"#contact-us"},
+      {name:"CONTACT",link:"http://localhost:3000/#contact-us"},
     ];
 
     const [open,setOpen] = useState(false)
