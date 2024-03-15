@@ -5,7 +5,7 @@ import Link from "next/link"
 
 function EventCard() {
   
-    const [eventsData, setEvents] = useState([])
+  
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -15,9 +15,8 @@ function EventCard() {
     async function getEvents() {
     try {
       setIsLoading(true)
-      const response = await axios.get('http://localhost:3001/user/events')
-      setEvents(response.data.events)
-      setFeaturedEvents(response.data.events.filter(event => event.featured));
+      const response = await axios.get('http://localhost:3001/user/events?featured=true')
+      setFeaturedEvents(response.data.events)
       } catch (error) {
       setIsError(true)
       setError(error)
@@ -29,7 +28,7 @@ function EventCard() {
   }, [])
 
    
-  //console.log(isError,isLoading,eventsData,featuredEvents)
+  //console.log(featuredEvents)
 
   return( 
     <>
@@ -57,7 +56,7 @@ function EventCard() {
           <h1 className="text-2xl font-semibold text-black capitalize lg:text-4xl py-6">Our Featured Events</h1>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2'>
         
-          { Object.values(featuredEvents).map((featuredEvent) => (
+          { Object.values(featuredEvents).slice(0,3).map((featuredEvent) => (
             
                 <div
                 key={featuredEvent._id}
