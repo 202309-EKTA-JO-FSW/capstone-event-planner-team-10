@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
-import Link from "next/link";
+import Link from "next/link"
 
 function EventCard() {
   
@@ -53,7 +53,7 @@ function EventCard() {
                 </div>
             </div>
         ):(
-          <section className="py-10 px-4">
+          <section className="mx-auto px-8 py-8 lg:py-40">
           <h1 className="text-2xl font-semibold text-black capitalize lg:text-4xl py-6">Our Featured Events</h1>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2'>
         

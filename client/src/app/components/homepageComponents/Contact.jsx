@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Contact() {
     return(
-            <section class=" p-10 bg-stone-800">
+            <section class=" p-10 bg-stone-800" id="contact-us">
                 <h1 class="text-2xl font-semibold text-gray-800 capitalize lg:text-4xl dark:text-white">Reach Us</h1>
 
                 <div class="container px-4 py-8 mx-auto">
