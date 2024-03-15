@@ -14,15 +14,9 @@ function FeaturedEvents(){
     async function getEvents() {
     try {
       setIsLoading(true)
-      const uniqueGenresMap = {}
-      const response = await axios.get('http://localhost:3001/user/events')
-      response.data.events.forEach(event => {
-                if (!uniqueGenresMap[event.genre.name]) {
-                    uniqueGenresMap[event.genre.name] = event.image
-                }
-            })
-        const uniqueGenres = Object.entries(uniqueGenresMap).map(([genre, image]) => ({ genre, image }))
-        setUniqueGenres(uniqueGenres)
+
+      const response = await axios.get('http://localhost:3001/user/genre-list')
+      setUniqueGenres(response.data)
       } catch (error) {
       setIsError(true)
       setError(error)
@@ -32,7 +26,7 @@ function FeaturedEvents(){
   }
   getEvents()
   }, [])
-  //console.log(uniqueGenres)
+  console.log(uniqueGenres)
 
   return( 
     <>
@@ -59,11 +53,11 @@ function FeaturedEvents(){
             <section class="container mx-auto px-8 pb-8 lg:pb-40 lg:m-0">
                 <h2 class="block antialiased tracking-normal font-sans text-4xl font-semibold leading-[1.3] text-blue-gray-900 !text-3xl !leading-snug lg:!text-4xl">Check Our Events Genres</h2>
                 <div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-3">
-                {uniqueGenres.map(({ genre, image }, index)=>(
-                    <div class="relative flex flex-col bg-clip-border rounded-xl bg-transparent text-gray-700 shadow-md relative grid min-h-[20rem] items-end overflow-hidden rounded-xl" key= {index}><img src={image} alt={genre} class="absolute inset-0 h-full w-full object-cover object-center" />
+                {Object.values(uniqueGenres).slice(0,6).map((genre, index)=>(
+                    <div class="relative flex flex-col bg-clip-border rounded-xl bg-transparent text-gray-700 shadow-md relative grid min-h-[15rem] items-end overflow-hidden rounded-xl" key= {index}><img src={getGenreImage(genre.name)} alt={genre.name} class="absolute inset-0 h-full w-full object-cover object-center" />
                     <div class="absolute inset-0 bg-black/40"></div>
                     <div class="p-6 relative flex flex-col justify-end">
-                        <h4 class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">{genre}</h4>
+                        <h4 class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">{genre.name}</h4>
                     </div>
                     </div>
                 ))}
@@ -76,6 +70,24 @@ function FeaturedEvents(){
 
   )
   
+}
+
+function getGenreImage(genre) {
+   
+    switch (genre) {
+        case 'Concert':
+            return 'https://images.unsplash.com/photo-1583795484071-3c453e3a7c71?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        case 'Gaming':
+            return 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        case 'Classical':
+            return'https://images.unsplash.com/photo-1519682718457-c82ce8296645?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        case 'Rock':
+            return'https://images.unsplash.com/photo-1611898979774-e202e8e9ffbe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        case 'DJs':
+            return'https://images.unsplash.com/photo-1501527459-2d5409f8cf9f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        default:
+            return 'https://images.unsplash.com/photo-1573152958734-1922c188fba3?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    }
 }
 
 export default FeaturedEvents

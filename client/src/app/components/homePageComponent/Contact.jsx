@@ -8,7 +8,7 @@ export default function Contact() {
 
                 <div class="container px-4 py-8 mx-auto">
                     
-                    <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 xl:gap-12 md:grid-cols-3 xl:grid-cols-4">
+                    <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 xl:gap-12 md:grid-cols-3 lg:grid-cols-4">
                         <div class="p-8 space-y-3 ">
                             <span class="flex text-orange-200">
                                 <svg
@@ -71,9 +71,9 @@ export default function Contact() {
                                 </svg>
                             </span>
 
-                            <h1 class="text-xl font-semibold text-gray-700 capitalize">Send Us Eamil</h1>
+                            <h1 class="text-xl font-semibold text-white">Send Us Email</h1>
 
-                            <p class="text-gray-500 dark:text-gray-300">
+                            <p class="text-gray-500">
                                 Eventure@mail.com
                             </p>
 
