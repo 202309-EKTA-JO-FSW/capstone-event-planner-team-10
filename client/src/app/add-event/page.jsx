@@ -177,7 +177,7 @@ const EventForm = () => {
     }
   };
   return (
-    <div className="max-w-3xl mx-auto py-8">
+    <div className="max-w-3xl mx-auto py-8 mt-16">
       <h1 className="text-3xl font-bold mb-6 text-center">Create Event</h1>
       <form
         onSubmit={handleSubmit}

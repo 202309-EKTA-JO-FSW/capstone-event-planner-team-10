@@ -107,24 +107,6 @@ exports.logoutUser = (req, res) => {
   res.json({ success: true });
 };
 
-//myprofile
-exports.userProfile = async (req, res) => {
-  try {
-    const userId = req.user._id;
-
-    const user = await User.findById(userId).populate("location");
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 //search/filter
 exports.searchEvents = async (req, res) => {
   try {

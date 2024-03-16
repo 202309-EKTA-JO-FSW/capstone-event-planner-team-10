@@ -24,7 +24,7 @@ const signInForm = () => {
       document.cookie = `token=${token}; path=/`;
       console.log("User:", user);
       console.log("Token:", token);
-      router.push("/events");
+      router.push("/");
     } catch (err) {
       setError(err.message);
     }
@@ -35,7 +35,7 @@ const signInForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8">
+    <div className="max-w-3xl mx-auto py-8 mt-24">
       <div className="bg-white shadow-lg rounded-md p-8">
         <div className="flex flex-col items-center mb-6">
           <img

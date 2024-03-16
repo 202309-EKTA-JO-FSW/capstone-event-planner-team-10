@@ -44,9 +44,6 @@ router.get("/orders", authenticateUser, userController.getUserOrders);
 //cancel order
 router.post("/cancel-order", authenticateUser, userController.cancelOrder);
 
-//myprofile
-router.get("/myprofile", authenticateUser, userController.userProfile);
-
 //get all locations
 router.get("/location-list", userController.getAllLocations);
 
@@ -56,6 +53,7 @@ router.get("/genre-list", userController.getAllGenres);
 //get event by id
 router.get("/events/:id", userController.getEventById);
 
+//myprofile
 router.get("/me", authenticateUser, userController.getCurrentUser);
 
 module.exports = router;

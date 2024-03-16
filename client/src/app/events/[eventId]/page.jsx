@@ -94,7 +94,7 @@ const EventPage = ({ params }) => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 mt-20">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <img
           src={event.image}
