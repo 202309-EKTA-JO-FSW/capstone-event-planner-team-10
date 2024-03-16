@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const router = express.Router();
 const adminRoute = require("./routes/adminRoute");
 const userRoute = require("./routes/userRoute");
 
@@ -29,6 +30,10 @@ app.get("/test", (req, res) => {
   res.json(
     "Server connection to client works!! Good Luck with your capstones :D"
   );
+});
+
+app.get("/", (req, res) => {
+  res.send("hello world");
 });
 
 app.use("/admin", adminRoute);
