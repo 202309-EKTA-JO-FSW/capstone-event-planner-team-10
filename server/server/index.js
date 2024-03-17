@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(passport.initialize());
 
 const apiProxy = createProxyMiddleware({
-  target: `http://localhost:${port}`,
+  target: `18.153.163.168:${port}`,
   changeOrigin: true,
 });
 
@@ -50,12 +50,12 @@ const proxyApp = express();
 proxyApp.use(
   "/",
   createProxyMiddleware({
-    target: `http://localhost:${port}`,
+    target: `18.153.163.168:${port}`,
     changeOrigin: true,
   })
 );
 
-http.createServer(proxyApp).listen(80, () => {
+http.createServer(proxyApp).listen(8080, () => {
   console.log("Reverse proxy listening on port 80");
 });
 
