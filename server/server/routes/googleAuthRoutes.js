@@ -23,7 +23,7 @@ router.get(
         httpOnly: true,
         secure: false,
         maxAge: 60 * 60 * 12,
-        sameSite: "strict",
+        sameSite: "none",
         path: "/",
       })
     );

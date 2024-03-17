@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const router = express.Router();
 const adminRoute = require("./routes/adminRoute");
 const userRoute = require("./routes/userRoute");
 
