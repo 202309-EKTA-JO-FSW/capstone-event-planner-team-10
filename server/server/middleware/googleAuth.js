@@ -54,7 +54,7 @@ exports.generateToken = (req, res) => {
       httpOnly: false,
       secure: false,
       maxAge: null,
-      sameSite: "strict",
+      sameSite: "none",
       path: "/",
     })
   );

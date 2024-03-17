@@ -1,1 +1,1 @@
-exports.BASE_URL = `http://localhost:3001`;
+exports.BASE_URL = `http://eventure-backend.us.to`;
