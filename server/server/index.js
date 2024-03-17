@@ -3,7 +3,6 @@ const cors = require("cors");
 const router = express.Router();
 const adminRoute = require("./routes/adminRoute");
 const userRoute = require("./routes/userRoute");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const passport = require("passport");
 
@@ -19,15 +18,8 @@ app.use(express.json());
 
 app.use(passport.initialize());
 
-const apiProxy = createProxyMiddleware({
-  target: `18.153.163.168:${port}`,
-  changeOrigin: true,
-});
-
-app.use("/", apiProxy);
-
-app.listen(port, "localhost", () => {
-  console.log(`Server listening on localhost:${port}`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
   connectToMongo();
 });
 
@@ -43,20 +35,5 @@ app.get("/", (req, res) => {
 
 app.use("/admin", adminRoute);
 app.use("/user", userRoute);
-
-const http = require("http");
-const proxyApp = express();
-
-proxyApp.use(
-  "/",
-  createProxyMiddleware({
-    target: `18.153.163.168:${port}`,
-    changeOrigin: true,
-  })
-);
-
-http.createServer(proxyApp).listen(8080, () => {
-  console.log("Reverse proxy listening on port 80");
-});
 
 module.exports = app;
