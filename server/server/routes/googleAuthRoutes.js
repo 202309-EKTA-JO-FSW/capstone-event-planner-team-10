@@ -17,8 +17,6 @@ router.get(
     });
 
     res.json({ token });
-
-    res.redirect("/");
   }
 );
 
