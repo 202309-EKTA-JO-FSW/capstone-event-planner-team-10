@@ -33,10 +33,8 @@ const signInForm = () => {
   const handleGoogleSignIn = () => {
     const googleWindow = window.open(`${BASE_URL}/user/auth/google`, "_blank");
 
-    // Listen for the message event from the new window
     window.addEventListener("message", handleGoogleResponse, false);
 
-    // Store the new window reference to remove the event listener later
     window.googleWindow = googleWindow;
   };
 
@@ -46,13 +44,10 @@ const signInForm = () => {
       document.cookie = `token=${token}; path=/`;
       console.log("Token:", token);
 
-      // Close the Google sign-in window
       window.googleWindow.close();
 
-      // Remove the event listener
       window.removeEventListener("message", handleGoogleResponse);
 
-      // Redirect to the desired page
       router.push("/");
     }
   };
