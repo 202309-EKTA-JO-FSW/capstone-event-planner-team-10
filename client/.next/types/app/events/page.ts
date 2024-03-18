@@ -1,4 +1,4 @@
-// File: /usr/src/app/client/src/app/events/page.jsx
+// File: /home/hayder/capstone/capstone-event-planner-team-10/client/src/app/events/page.jsx
 import * as entry from '../../../../src/app/events/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

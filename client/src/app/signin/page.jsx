@@ -31,7 +31,25 @@ const signInForm = () => {
   };
 
   const handleGoogleSignIn = () => {
-    window.location.href = `${BASE_URL}/user/auth/google`;
+    const googleWindow = window.open(`${BASE_URL}/user/auth/google`, "_blank");
+
+    window.addEventListener("message", handleGoogleResponse, false);
+
+    window.googleWindow = googleWindow;
+  };
+
+  const handleGoogleResponse = (event) => {
+    if (event.origin === BASE_URL) {
+      const { token } = event.data;
+      document.cookie = `token=${token}; path=/`;
+      console.log("Token:", token);
+
+      window.googleWindow.close();
+
+      window.removeEventListener("message", handleGoogleResponse);
+
+      router.push("/");
+    }
   };
 
   return (

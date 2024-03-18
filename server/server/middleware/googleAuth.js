@@ -5,6 +5,8 @@ const User = require("../models/user");
 const cookie = require("cookie");
 require("dotenv").config();
 
+const BASE_URL = "http://localhost:3000";
+
 passport.use(
   new GoogleStrategy(
     {
@@ -46,8 +48,9 @@ exports.googleAuthCallback = passport.authenticate("google", {
 });
 
 exports.generateToken = (req, res) => {
-  const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET);
-
+  const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
   res.setHeader(
     "Set-Cookie",
     cookie.serialize("token", token, {
@@ -59,5 +62,10 @@ exports.generateToken = (req, res) => {
     })
   );
 
-  res.redirect("http://localhost:3000/events");
+  res.send(`
+    <script>
+      window.opener.postMessage({ token: '${token}' }, '${BASE_URL}');
+      window.close();
+    </script>
+  `);
 };

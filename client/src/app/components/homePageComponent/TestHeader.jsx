@@ -41,7 +41,7 @@ function Nav() {
   };
 
   const fetchUserData = async () => {
-    const token = getCookie("token");
+    const token = getCookie("token") || localStorage.getItem("token");
 
     if (token) {
       try {
