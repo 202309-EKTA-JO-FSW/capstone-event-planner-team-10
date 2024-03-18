@@ -2,6 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const cookie = require("cookie");
 require("dotenv").config();
 
 passport.use(
@@ -46,5 +47,17 @@ exports.googleAuthCallback = passport.authenticate("google", {
 
 exports.generateToken = (req, res) => {
   const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET);
-  res.json({ token });
+
+  res.setHeader(
+    "Set-Cookie",
+    cookie.serialize("token", token, {
+      httpOnly: false,
+      secure: false,
+      maxAge: null,
+      sameSite: "strict",
+      path: "/",
+    })
+  );
+
+  res.redirect("http://localhost:3000/events");
 };

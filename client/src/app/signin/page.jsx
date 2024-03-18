@@ -30,15 +30,8 @@ const signInForm = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/user/auth/google`, {});
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-      router.push("/");
-    } catch (err) {
-      setError(err.message);
-    }
+  const handleGoogleSignIn = () => {
+    window.location.href = `${BASE_URL}/user/auth/google`;
   };
 
   return (
