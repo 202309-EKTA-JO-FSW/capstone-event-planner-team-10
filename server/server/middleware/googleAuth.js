@@ -46,8 +46,9 @@ exports.googleAuthCallback = passport.authenticate("google", {
 });
 
 exports.generateToken = (req, res) => {
-  const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET);
-
+  const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
   res.setHeader(
     "Set-Cookie",
     cookie.serialize("token", token, {
@@ -59,5 +60,5 @@ exports.generateToken = (req, res) => {
     })
   );
 
-  res.redirect("http://localhost:3000/events");
+  res.json({ token });
 };

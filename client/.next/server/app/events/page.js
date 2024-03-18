@@ -355,7 +355,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \***********************************/
 /***/ ((__unused_webpack_module, exports) => {
 
-eval("exports.BASE_URL = `http://localhost:3001`;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9zcmMvYXBwL3V0bHMvY29uc3RhbnRzLmpzIiwibWFwcGluZ3MiOiJBQUFBQSxnQkFBZ0IsR0FBRyxDQUFDLHFCQUFxQixDQUFDIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vY2xpZW50Ly4vc3JjL2FwcC91dGxzL2NvbnN0YW50cy5qcz81MjE0Il0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydHMuQkFTRV9VUkwgPSBgaHR0cDovL2xvY2FsaG9zdDozMDAxYDtcbiJdLCJuYW1lcyI6WyJleHBvcnRzIiwiQkFTRV9VUkwiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./src/app/utls/constants.js\n");
+eval("exports.BASE_URL = `http://eventure-backend.us.to`;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9zcmMvYXBwL3V0bHMvY29uc3RhbnRzLmpzIiwibWFwcGluZ3MiOiJBQUFBQSxnQkFBZ0IsR0FBRyxDQUFDLDZCQUE2QixDQUFDIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vY2xpZW50Ly4vc3JjL2FwcC91dGxzL2NvbnN0YW50cy5qcz81MjE0Il0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydHMuQkFTRV9VUkwgPSBgaHR0cDovL2V2ZW50dXJlLWJhY2tlbmQudXMudG9gO1xuIl0sIm5hbWVzIjpbImV4cG9ydHMiLCJCQVNFX1VSTCJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(ssr)/./src/app/utls/constants.js\n");
 
 /***/ }),
 
