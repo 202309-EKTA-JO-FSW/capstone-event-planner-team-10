@@ -22,7 +22,7 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("information");
 
   useEffect(() => {
-    const token = getCookie("token");
+    const token = getCookie("token") || localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
     } else {
@@ -44,7 +44,8 @@ const ProfilePage = () => {
   };
 
   const handleLocationUpdate = () => {
-    fetchUserData(getCookie("token"));
+    const token = getCookie("token") || localStorage.getItem("token");
+    fetchUserData(token);
   };
 
   if (!userData) {

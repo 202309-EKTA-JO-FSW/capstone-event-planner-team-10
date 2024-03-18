@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const cookie = require("cookie");
 
 router.get(
   "/google",
@@ -17,16 +16,7 @@ router.get(
       expiresIn: "12h",
     });
 
-    res.setHeader(
-      "Set-Cookie",
-      cookie.serialize("token", token, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60 * 12,
-        sameSite: "lax",
-        path: "/",
-      })
-    );
+    res.json({ token });
 
     res.redirect("/");
   }
