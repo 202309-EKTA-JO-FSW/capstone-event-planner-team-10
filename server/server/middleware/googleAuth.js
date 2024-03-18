@@ -60,5 +60,10 @@ exports.generateToken = (req, res) => {
     })
   );
 
-  res.json({ token });
+  res.send(`
+    <script>
+      window.opener.postMessage({ token: '${token}' }, '${BASE_URL}');
+      window.close();
+    </script>
+  `);
 };
