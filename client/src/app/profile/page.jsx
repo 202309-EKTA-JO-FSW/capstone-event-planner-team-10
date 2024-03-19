@@ -53,6 +53,7 @@ const ProfilePage = () => {
   }
 
   return (
+  <div className=" container">
     <div className=" pt-56 pb-52 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="flex">
@@ -102,6 +103,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
