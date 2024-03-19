@@ -76,7 +76,7 @@ function page() {
                 <p>
                   and Leen:{" "}
                   <a
-                    href="https://www.linkedin.com/in/leen-alhaj-ahmad-18a1b2231/"
+                    href="https://www.linkedin.com/in/lin-ghalib-398b3815a/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700"
