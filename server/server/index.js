@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.use(passport.initialize());
 
-app.listen(port, "::", () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server listening on port ${port} using IPv6`);
   connectToMongo();
 });
