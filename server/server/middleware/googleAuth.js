@@ -5,7 +5,7 @@ const User = require("../models/user");
 const cookie = require("cookie");
 require("dotenv").config();
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://eventure-000.vercel.app";
 
 passport.use(
   new GoogleStrategy(
