@@ -8,7 +8,7 @@ function Footer() {
         <Logo />
         <div className="flex flex-wrap items-center justify-center gap-5 lg:gap-12 gap-y-3 lg:flex-nowrap text-grey-100 ml-5">
           <a
-            href="#"
+            href="/about"
             className="text-white hover:text-orange-200 font-sans font-semibold uppercase"
           >
             About
