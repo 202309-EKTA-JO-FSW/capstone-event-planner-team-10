@@ -62,7 +62,7 @@ function page() {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700"
                   >
-                    linkedin
+                    linkedin,
                   </a>{" "}
                   <a
                     href="https://github.com/Hayder000"
@@ -81,7 +81,7 @@ function page() {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700"
                   >
-                    linkedin
+                    linkedin,
                   </a>{" "}
                   <a
                     href="https://github.com/leen-gh"
