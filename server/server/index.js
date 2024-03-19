@@ -8,7 +8,7 @@ const passport = require("passport");
 require("dotenv").config();
 const connectToMongo = require("./db/connection");
 const app = express();
-const port = 3001;
+const port = 80;
 
 app.set("view engine", "ejs");
 app.use(cors());
@@ -17,8 +17,8 @@ app.use(express.json());
 
 app.use(passport.initialize());
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port} using IPv6`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on port ${port}`);
   connectToMongo();
 });
 
