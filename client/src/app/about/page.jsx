@@ -2,7 +2,7 @@ import React from "react";
 
 function page() {
   return (
-    <div className=" mb-8 mt-20">
+    <div className="mb-8 mt-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 mt-20">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-8">
@@ -38,10 +38,61 @@ function page() {
                 your guide to a life filled with extraordinary experiences, all
                 at competitive prices.
               </p>
-              <p>
+              <p className="mb-4">
                 Join the Eventure revolution and unlock a world of
                 possibilities. Your next adventure awaits!
               </p>
+              <div className="text-sm mt-8">
+                <a
+                  href="https://github.com/202309-EKTA-JO-FSW/capstone-event-planner-team-10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  Link to the repository
+                </a>
+              </div>
+              <div className="text-sm mt-2">
+                <p>made with love, by:</p>
+                <p>
+                  Hayder:{" "}
+                  <a
+                    href="https://www.linkedin.com/in/hayder-abu-al-hummos-10409b2a3/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    linkedin
+                  </a>{" "}
+                  <a
+                    href="https://github.com/Hayder000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    github
+                  </a>
+                </p>
+                <p>
+                  and Leen:{" "}
+                  <a
+                    href="https://www.linkedin.com/in/leen-alhaj-ahmad-18a1b2231/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    linkedin
+                  </a>{" "}
+                  <a
+                    href="https://github.com/leen-gh"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    github
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
