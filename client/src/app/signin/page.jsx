@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BASE_URL } from "../utls/constants";
 
@@ -8,7 +7,6 @@ const signInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +22,6 @@ const signInForm = () => {
       document.cookie = `token=${token}; path=/`;
       console.log("User:", user);
       console.log("Token:", token);
-      router.push("/");
     } catch (err) {
       setError(err.message);
     }
@@ -47,8 +44,6 @@ const signInForm = () => {
       window.googleWindow.close();
 
       window.removeEventListener("message", handleGoogleResponse);
-
-      router.push("/");
     }
   };
 
@@ -110,12 +105,14 @@ const signInForm = () => {
             </div>
           </div>
           <div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 bg-stone-700 text-white rounded-full hover:bg-orange-300 hover:text-black border-2 border-stone-700 duration-300"
-            >
-              Sign in
-            </button>
+            <a href="/">
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-stone-700 text-white rounded-full hover:bg-orange-300 hover:text-black border-2 border-stone-700 duration-300"
+              >
+                Sign in
+              </button>
+            </a>
           </div>
         </form>
         <p className="mt-6 text-center text-sm text-gray-500">
@@ -127,15 +124,17 @@ const signInForm = () => {
             Register
           </a>
         </p>
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            className="w-full px-4 py-2 border-2 border-blue-500 hover:border-blue-500 bg-white text-black rounded-full hover:bg-gray-100 focus:outline-none duration-300"
-          >
-            Or continue with Google
-          </button>
-        </div>
+        <a href="/">
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full px-4 py-2 border-2 border-blue-500 hover:border-blue-500 bg-white text-black rounded-full hover:bg-gray-100 focus:outline-none duration-300"
+            >
+              Or continue with Google
+            </button>
+          </div>
+        </a>
       </div>
     </div>
   );
