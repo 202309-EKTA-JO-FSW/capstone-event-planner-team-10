@@ -1,4 +1,51 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { imageDb } from "../../utls/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { BASE_URL } from "../../utls/constants";
+
 const ProfileInformation = ({ userData }) => {
+  const [image, setImage] = useState(null);
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      if (image) {
+        const imgRef = ref(imageDb, `users/${v4()}`);
+        await uploadBytes(imgRef, image);
+        const imageUrl = await getDownloadURL(imgRef);
+
+        const token = getCookie("token") || localStorage.getItem("token");
+        await axios.put(
+          `${BASE_URL}/user/image`,
+          { imageUrl },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error updating profile image:", error);
+    }
+  };
+
   return (
     <div className="flex items-start justify-between">
       <div>
@@ -59,12 +106,29 @@ const ProfileInformation = ({ userData }) => {
           <span className="text-gray-600">{userData.location.title}</span>
         </div>
       </div>
-      <div className="w-24 h-24 rounded-full overflow-hidden">
-        <img
-          src={userData.image}
-          alt="Profile"
-          className="object-cover w-full h-full"
+      <div>
+        <label htmlFor="image-upload">
+          <img
+            src={userData.image}
+            alt="Profile"
+            className="w-32 h-32 rounded-full cursor-pointer"
+          />
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
         />
+        {image && (
+          <button
+            onClick={handleImageUpload}
+            className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Update Image
+          </button>
+        )}
       </div>
     </div>
   );
