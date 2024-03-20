@@ -20,7 +20,7 @@ function Footer() {
             Explore
           </a>
           <a
-            href="#contact-us"
+            href="/#contact-us"
             className="text-white hover:text-orange-200 font-sans font-semibold uppercase"
           >
             contact
