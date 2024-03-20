@@ -134,16 +134,18 @@ function Nav() {
             {isLoading ? (
               <div>Loading...</div>
             ) : user ? (
-              <div
-                className="relative w-10 h-10 rounded-full overflow-hidden cursor-pointer"
-                onClick={handleProfileClick}
-              >
-                <img
-                  src={user.image}
-                  alt="User Profile"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <a href="/profile">
+                <div
+                  className="relative w-10 h-10 rounded-full overflow-hidden cursor-pointer"
+                  // onClick={handleProfileClick}
+                >
+                  <img
+                    src={user.image}
+                    alt="User Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </a>
             ) : (
               <button
                 className="text-white font-sans font-semibold uppercase middle none center mr-3 rounded-xl border-2 border-slate-300 py-3 px-6 text-base transition-all hover:text-orange-200 hover:opacity-75 focus:ring focus:ring-grey-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
