@@ -288,6 +288,28 @@ exports.getAllLocations = async (req, res) => {
   }
 };
 
+//update image
+exports.updateProfileImage = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.image = req.body.imageUrl;
+
+    await user.save();
+
+    res.status(200).json({ message: "Profile image updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 //update location:
 exports.updateLocation = async (req, res) => {
   try {

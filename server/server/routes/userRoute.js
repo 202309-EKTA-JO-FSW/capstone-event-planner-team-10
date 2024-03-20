@@ -16,6 +16,9 @@ router.get("/auth/google", googleAuth);
 //google auth
 router.get("/auth/google/callback", googleAuthCallback, generateToken);
 
+//update user's image
+router.put("/image", userController.updateProfileImage);
+
 //update user's location
 router.put("/update-location", userController.updateLocation);
 
