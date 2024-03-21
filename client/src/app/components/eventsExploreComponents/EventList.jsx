@@ -16,7 +16,7 @@ const EventList = ({ events }) => {
     }
   };
 
-  const handlePurchaseTicket = async (eventId, ticketId, quantity) => {
+    const handlePurchaseTicket = async (eventId, ticketId, quantity) => {
     try {
       const token = getCookie("token");
 
@@ -37,11 +37,11 @@ const EventList = ({ events }) => {
       if (response.ok) {
         setShowPurchaseModal(true);
       } else {
-        const error = await response.json();
-        alert(error.message);
+        router.push("/signin");
       }
     } catch (error) {
       console.error("Error purchasing ticket:", error);
+      router.push("/signin");
     }
   };
 
