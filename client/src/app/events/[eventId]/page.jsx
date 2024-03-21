@@ -60,7 +60,7 @@ const EventPage = ({ params }) => {
     }
   };
 
-  const handleBuyNowClick = async (ticket) => {
+    const handleBuyNowClick = async (ticket) => {
     try {
       const token = getCookie("token");
       if (!token) {
@@ -81,11 +81,11 @@ const EventPage = ({ params }) => {
       if (response.ok) {
         setShowPurchaseModal(true);
       } else {
-        const error = await response.json();
-        alert(error.message);
+        router.push("/signin");
       }
     } catch (error) {
       console.error("Error purchasing ticket:", error);
+      router.push("/signin");
     }
   };
 
