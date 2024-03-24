@@ -85,12 +85,7 @@ const ExplorePage = () => {
       filterString += `${searchParams.title}, `;
     }
     if (searchParams.location) {
-      const selectedLocation = locations.find(
-        (location) => location._id === searchParams.location
-      );
-      filterString += `${
-        selectedLocation ? selectedLocation.title : "Your location"
-      }, `;
+      filterString += `${searchParams.location.title}, `;
     }
     if (searchParams.genre) {
       const selectedGenre = genres.find(
