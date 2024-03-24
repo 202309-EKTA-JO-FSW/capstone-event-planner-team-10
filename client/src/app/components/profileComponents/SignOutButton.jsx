@@ -13,7 +13,7 @@ const SignOutButton = () => {
       }
 
       document.cookie =
-        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+"token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     } catch (err) {
       console.error(err);
     }
